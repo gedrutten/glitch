@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head><title>Seriously.js - QCA3642 </title></head>
+<body>
+
+	<script src="lib/seriously.js"></script>
+
+	<script src="lib/effects/seriously.hue-saturation.js"></script>
+	<script src="lib/effects/seriously.ascii.js"></script>
+	<script src="lib/effects/seriously.ripple.js"></script>
+	<script src="lib/effects/seriously.kaleidoscope.js"></script>
+	
+  <!-- ACTION - add your effect script tags here (see INSTRUCTIONS below) -->
+
+  <!-- <script src="lib/effects/seriously.EFFECTNAME.js"></script>  -->
+
+
+  <script>
+
+
+  ////////////////////////////////Seriously! - QCA3642 - video effects  -- https://github.com/brianchirls/Seriously.js
+
+  /// INSTRUCTIONS - ADDING A NEW EFFECT IN THE CHAIN
+
+  /// Replace EFFECTNAME (everywhere) with the name of the effect from the /lib/effects/ directory
+  /// Replace effectName with a name of the effect eg huesaturation
+  /// Replace effectNamePrevious with the name of the previous effect in your chain eg effect1
+
+  /// Lookup your effect parameters here - https://github.com/brianchirls/Seriously.js/wiki
+  /// eg  effectName.parameter = 1.0
+
+  //////////////////////do not modify
+  var seriously, // the main object that holds the entire composition
+    sourcevideo, // a wrapper object for our source image
+    target; // a wrapper object for our target canvas
+  seriously = new Seriously();
+
+
+ ///////////////////////////////////////// ACTION - enter the video URL
+ var videoName = "https://cdn.glitch.com/a56ebc49-3e13-48a2-8e85-ba3471812dc2%2FPexels%20Videos%201630077.mp4?v=1601525882356";
+
+
+//////////////////////do not modify
+ var video = document.createElement('video');
+ video.width =  window.innerWidth;
+ video.height = window.innerHeight;
+ video.crossOrigin = "anonymous";
+ video.preload = ''
+ video.autoload = true
+ video.src = videoName
+
+
+ ///////  ACTION - video settings
+video.autoplay=true
+video.loop=true
+video.muted=true
+video.playsinline=true
+
+
+  //////////////////////do not modify
+ var canvas = document.createElement("canvas");
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+ canvas.style.position = "absolute";
+ document.body.scrollTop = 0; // <-- pull the page back up to the top
+ document.body.style.overflow = "hidden";
+ document.body.style.top = 0;
+ document.body.style.left = 0;
+ document.body.style.margin = 0;
+ document.body.style.border = "none";
+ document.body.appendChild(canvas);
+
+ video.load();
+
+ video.addEventListener('loadeddata', function() {
+    sourcevideo = seriously.source(video);
+    target = seriously.target(canvas);
+
+
+    ////////////////////////////////////////////////////// FIRST EFFECT DONE FOR YOU
+   /// https://github.com/brianchirls/Seriously.js/wiki/Hue-Saturation-Adjust
+
+    var huesaturation = seriously.effect('hue-saturation');
+    huesaturation.source = sourcevideo;
+
+    /// add hue saturation parameteres
+    huesaturation.hue = 0.7 // 0.7
+    huesaturation.saturation = 0.9 //.9
+
+
+   ///// ACTION - add your effects here - atm effectNamePrevious is 'huesaturation'
+
+    //1. var effectName = seriously.effect('EFFECTNAME');
+    //2. effectName.source = effectNamePrevious;  // chain as last effect - is 'huesaturation' atm
+   // 3. effectName.parameter = ??? // enter a value (number,boolean (true/false) or string 'mode')
+
+	  var ascii = seriously.effect('ascii');
+    ascii.background = (0.9, 0.1, 0.1, 0.8);
+	  ascii.source = huesaturation;
+
+   // New effect
+   var kaleidoscope = seriously.effect('kaleidoscope');
+   kaleidoscope.source = ascii;
+   kaleidoscope.segments = 2;
+   
+   var ripple = seriously.effect('ripple');
+   ripple.source = kaleidoscope;
+
+   /////////////// ACTION - change 'huesaturation' as the last effectName in your chain
+    target.source = ripple;  // set as last effect in chain
+
+
+   //////////////////////do not modify
+   // seriously.go();
+   seriously.go(function(now) {
+     ripple.center = (0.5, Math.cos(now/1000));
+     //huesaturation.hue = Math.cos(now/1000);
+   });
+
+   video.play();
+
+  }, false);
+
+
+  </script>
+
+
+</body>
+</html>
